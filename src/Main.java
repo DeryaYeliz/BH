@@ -5,6 +5,7 @@ public class Main {
 		BH bhOject = new BH();
 		Population P = new Population();
 		P.init();
+		
 		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
 			
 			bhOject.updateFitness(P);
@@ -13,7 +14,7 @@ public class Main {
 			bhOject.R = bhOject.updateRadius(P, bhOject.indexOfBH, bhOject.EP);
 			
 			for (int j = 0; j < Configuration.NUM_STARS; j++) {
-				if(dist(bhOject.BH, P.stars.get(i)) < bhOject.R) {
+				if(dist(bhOject.BH, P.stars.get(j)) < bhOject.R) {
 					//replace //TODO
 					P.init();					
 				}
@@ -42,10 +43,10 @@ public class Main {
 	
 	
 	public static void printResult(Population P) {
-		System.out.println("Solution space is: ");
+		System.out.println("Solution space: ");
 		for(int i = 0; i < Configuration.NUM_STARS; i++) {
-			System.out.print("Star" + i + ": ");
-			for(int j = 0; j < Configuration.NUM_PARAMTERS; i++) {
+			System.out.print("Star" + (i+1) + ": ");
+			for(int j = 0; j < Configuration.NUM_PARAMTERS; j++) {
 				System.out.print(P.stars.get(i).parametersVector.get(j) + " ");
 
 			}

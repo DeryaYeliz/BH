@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -5,28 +6,33 @@ public class BH {
 	
 	public Star BH;
 	public int indexOfBH;
-	public List<Integer> EP; 
-	public int R;
+	public List<Double> EP; 
+	public double R;
 	
+	
+	public BH() {
+		EP = new ArrayList<Double>();
+	}
+
 	public void updateFitness(Population P){
-		int coverageValue;
+		double coverageValue;
 		for (int i = 0; i < Configuration.NUM_STARS; i++) {
 			coverageValue = 50; // y(P.stars.get(i);) //TODO
 			if(coverageValue != 0)
 				EP.add(1/coverageValue);
 			else
-				EP.add(0);
+				EP.add(0.0);
 
 		}
   
-        int best = Collections.min(EP);
+        double best = Collections.min(EP);
         indexOfBH = EP.indexOf(best);
         BH = P.stars.get(indexOfBH);
 	}
 
-	public int updateRadius(Population P, int indexOfBH, List<Integer> EP){
-		int sum = 0;
-		int R;
+	public double updateRadius(Population P, int indexOfBH, List<Double> EP){
+		double sum = 0;
+		double R;
 		for (int i = 0; i < Configuration.NUM_STARS; i++) {
 			sum = sum + EP.get(i);
 		}
@@ -50,8 +56,8 @@ public class BH {
 				newValue = P.stars.get(i).parametersVector.get(j) 
 						+ randomValue * (BHValue-currentValue);
 				
-				minValue = BH.params.minMaxBoundryMap.get("param_"+ (i+j)).get(0);
-				maxValue = BH.params.minMaxBoundryMap.get("param_"+ (i+j)).get(1);
+				minValue = BH.params.minMaxBoundryMap.get("param_"+ (j+1)).get(0);
+				maxValue = BH.params.minMaxBoundryMap.get("param_"+ (j+1)).get(1);
 
 				//sinir kontrolu. 
 				if(newValue < minValue) {
