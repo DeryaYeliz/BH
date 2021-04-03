@@ -13,8 +13,9 @@ public class Main {
 			bhOject.R = bhOject.updateRadius(P, bhOject.indexOfBH, bhOject.EP);
 			
 			for (int j = 0; j < Configuration.NUM_STARS; j++) {
-				if(dist(bhOject.BH, P.stars.get(i))<bhOject.R) {
-					//replace
+				if(dist(bhOject.BH, P.stars.get(i)) < bhOject.R) {
+					//replace //TODO
+					P.init();					
 				}
 			}
 			bhOject.updateFitness(P);

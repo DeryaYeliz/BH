@@ -1,16 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 public class Star {
 
 
 	public List<Integer> parametersVector; 
-
+	Parameters params;
 	public Star() {
-		//this.star = new ArrayList<Integer>();		
-		Parameters params = new Parameters(Configuration.NUM_PARAMTERS);
+		params = new Parameters(Configuration.NUM_PARAMTERS);
+		params.initilizeBoundries();
 		generateRandomStar(params,-1);
 	}
 	
