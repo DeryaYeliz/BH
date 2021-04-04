@@ -1,33 +1,83 @@
+import java.util.List;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 
-		BH bhOject = new BH();
-		Population P = new Population();
-		P.init();
+		BH bhObject = new BH();
+
 		
 		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
 			
-			bhOject.updateFitness(P);
-			bhOject.moveStars(P, bhOject.BH);
-			bhOject.updateFitness(P);
-			bhOject.R = bhOject.updateRadius(P, bhOject.indexOfBH, bhOject.EP);
+			bhObject.updateFitness(bhObject.P);
+			bhObject.moveStars(bhObject.P, bhObject.BH);
+			bhObject.updateFitness(bhObject.P);
+			bhObject.R = bhObject.updateRadius(bhObject.P, bhObject.indexOfBH, bhObject.EP);
 			
 			for (int j = 0; j < Configuration.NUM_STARS; j++) {
-				if(dist(bhOject.BH, P.stars.get(j)) < bhOject.R) {
+				if(dist(bhObject.BH, bhObject.P.stars.get(j)) < bhObject.R) {
 					//replace //TODO
-					P.init();					
+					bhObject.P.init();					
 				}
 			}
-			bhOject.updateFitness(P);
+			bhObject.updateFitness(bhObject.P);
 			
 			//TODO: if stop criteria is met
 				//Break;
 
 		}
-		printResult(P);
+		printResult(bhObject.P);
 		
 	}
+	
+	
+	public static void main(String[] args) {
+		MBH mbhObject = new MBH();
+		boolean improvement = false;
+		BH currentBH;
+		int indexOfBHo;
+		int indexOfBHn;
+		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
+			for (int j = 0; j < Configuration.NUM_BLACKHOLES; j++) {
+				currentBH = mbhObject.BHs.get(j);
+				currentBH.moveStars(currentBH.P, currentBH.BH);
+				currentBH.R = currentBH.updateRadius(currentBH.P, currentBH.indexOfBH, currentBH.EP);
+				for (int k = 0; k < Configuration.NUM_STARS; k++) {
+					if(dist(currentBH.BH, currentBH.P.stars.get(k)) < currentBH.R) {
+						//replace //TODO
+						currentBH.P.init();					
+					}
+				}
+				indexOfBHo = currentBH.indexOfBH;
+				currentBH.updateFitness(currentBH.P);
+				indexOfBHn = currentBH.indexOfBH;
+
+				improvement = isImprovement(indexOfBHo,indexOfBHn, currentBH.EP);
+				
+				if(!improvement) {
+					mbhObject.Es.set(j, mbhObject.Es.get(j) - 1 ); 
+				}
+				if(mbhObject.Es.get(j) < Configuration.E_THRESHOLD) {
+					currentBH = new BH(); //TODO
+					currentBH.updateFitness(currentBH.P);
+					mbhObject.Es.set(j, Configuration.E_MAX);					
+				}	
+			}
+						
+			//TODO: if stop criteria is met
+			//Break;
+
+		}
+		
+		for (int i = 0; i < Configuration.NUM_BLACKHOLES; i++) {
+			System.out.println("BH"+ (i+1) +": ");
+			printResult(mbhObject.BHs.get(i).P);
+		}
+	}
+	
+	
+	
+	
+	
 	
 	public static double dist(Star BH, Star S) {
 		//TODO: disti nasıl hesaplayacağını düşün.
@@ -41,6 +91,14 @@ public class Main {
 		return Math.sqrt(sumOfSquares);
 	}
 	
+	public static boolean isImprovement(int indexOfBHo, int indexOfBHn, List<Double> EP) {
+		
+		if(EP.get(indexOfBHn) < EP.get(indexOfBHo)) {
+			return true;
+		}
+		else
+			return false;
+	}
 	
 	public static void printResult(Population P) {
 		System.out.println("Solution space: ");

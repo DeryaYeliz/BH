@@ -8,10 +8,13 @@ public class BH {
 	public int indexOfBH;
 	public List<Double> EP; 
 	public double R;
-	
+	Population P;
 	
 	public BH() {
 		EP = new ArrayList<Double>();
+		P = new Population();
+		P.init();
+
 	}
 
 	public void updateFitness(Population P){
