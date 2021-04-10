@@ -1,13 +1,14 @@
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import destek.Configuration;
 
 public class MBH {
 	
 	public List<Integer> Es; 	
 	public List<BH> BHs;
 	
-	public MBH() {
+	public MBH() throws IOException {
 		BHs = new ArrayList<BH>();
 		Es = new ArrayList<Integer>();
 		for (int i = 0; i < Configuration.NUM_BLACKHOLES; i++) {

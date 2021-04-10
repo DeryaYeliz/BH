@@ -1,6 +1,10 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import destek.Configuration;
+import destek.Coverage;
 
 public class BH {
 	
@@ -10,6 +14,7 @@ public class BH {
 	public double R;
 	Population P;
 	
+	
 	public BH() {
 		EP = new ArrayList<Double>();
 		P = new Population();
@@ -17,14 +22,17 @@ public class BH {
 
 	}
 
-	public void updateFitness(Population P){
+	public void updateFitness(Population P) throws IOException{
 		double coverageValue;
 		for (int i = 0; i < Configuration.NUM_STARS; i++) {
-			coverageValue = 50; // y(P.stars.get(i);) //TODO
+			coverageValue = 50; 
+			Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);
+			Coverage.getCoverage(); 
 			if(coverageValue != 0)
 				EP.add(1/coverageValue);
 			else
 				EP.add(0.0);
+			Coverage.inputListforCoverage.clear();
 
 		}
   

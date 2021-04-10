@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import destek.Configuration;
 
 
 public class Star {

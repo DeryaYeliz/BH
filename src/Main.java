@@ -1,7 +1,9 @@
+import java.io.IOException;
 import java.util.List;
+import destek.Configuration;
 
 public class Main {
-	public static void main2(String[] args) {
+	public static void main2(String[] args) throws IOException {
 
 		BH bhObject = new BH();
 
@@ -30,7 +32,7 @@ public class Main {
 	}
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		MBH mbhObject = new MBH();
 		boolean improvement = false;
 		BH currentBH;
@@ -69,7 +71,7 @@ public class Main {
 		}
 		
 		for (int i = 0; i < Configuration.NUM_BLACKHOLES; i++) {
-			System.out.println("BH"+ (i+1) +": ");
+			System.out.println("BH Loop"+ (i+1) +": ");
 			printResult(mbhObject.BHs.get(i).P);
 		}
 	}
