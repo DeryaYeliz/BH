@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
+
 import destek.Configuration;
 
 public class Main {
@@ -30,9 +32,11 @@ public class Main {
 		printResult(bhObject.P);
 		
 	}
-	
-	
 	public static void main(String[] args) throws IOException {
+		
+
+	}
+	public static void main3(String[] args) throws IOException {
 		MBH mbhObject = new MBH();
 		boolean improvement = false;
 		BH currentBH;

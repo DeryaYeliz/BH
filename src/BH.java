@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import destek.Configuration;
 import destek.Coverage;
@@ -25,9 +26,9 @@ public class BH {
 	public void updateFitness(Population P) throws IOException{
 		double coverageValue;
 		for (int i = 0; i < Configuration.NUM_STARS; i++) {
-			coverageValue = 50; 
+			//coverageValue = 50; 
 			Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);
-			Coverage.getCoverage(); 
+			coverageValue = Coverage.getCoverage(); 
 			if(coverageValue != 0)
 				EP.add(1/coverageValue);
 			else
@@ -54,31 +55,39 @@ public class BH {
 	public void moveStars(Population P, Star BH){
 		
 		int currentValue;
-		int randomValue;
+		double randomValue;
 		int BHValue;
 		int newValue;
-		int maxValue;
-		int minValue;
+
+		double startRand;
+		double endRand;
+		int BHindex;
+		int currentIndex;
+		
 		for (int i = 0; i < Configuration.NUM_STARS; i++) {
 			for (int j = 0; j < Configuration.NUM_PARAMTERS; j++) {
 				currentValue = P.stars.get(i).parametersVector.get(j);
-				randomValue = Population.rand.ints(1, 0, 1).toArray()[0];
 				BHValue = BH.parametersVector.get(j);
-				newValue = P.stars.get(i).parametersVector.get(j) 
-						+ randomValue * (BHValue-currentValue);
 				
-				minValue = BH.params.minMaxBoundryMap.get("param_"+ (j+1)).get(0);
-				maxValue = BH.params.minMaxBoundryMap.get("param_"+ (j+1)).get(1);
-
-				//sinir kontrolu. 
-				if(newValue < minValue) {
-					P.stars.get(i).parametersVector.set(j, minValue)  ;
-				}else if (newValue > maxValue) {
-					P.stars.get(i).parametersVector.set(j, maxValue)  ;
+				//BH ve current in parametre tanimlarindaki indislerini al.
+				BHindex = BH.params.inputVectorsList.get(j).indexOf(BHValue);
+				currentIndex = BH.params.inputVectorsList.get(j).indexOf(currentValue);
+				
+				//start indisi kucuk olan olsun
+				if(BHindex<currentIndex) {
+					startRand = BHindex;
+					endRand = currentIndex;
 				}else {
-					P.stars.get(i).parametersVector.set(j, newValue);
-
-				}
+					startRand = currentIndex;
+					endRand = BHindex;
+				} 
+				//indiste random sayi uret. Parameters in o parametresini al.
+				randomValue = startRand + (new Random().nextDouble() * (endRand-startRand));
+				randomValue = Math.round(randomValue);//yuvarla
+				
+				newValue = BH.params.inputVectorsList.get(j).get((int)randomValue);
+				P.stars.get(i).parametersVector.set(j, newValue);
+				
 			}
 		}
 				

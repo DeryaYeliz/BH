@@ -9,6 +9,7 @@ public class Star {
 	public List<Integer> parametersVector; 
 	Parameters params;
 	public Star() {
+		parametersVector = new ArrayList<Integer>();
 		params = new Parameters(Configuration.NUM_PARAMTERS);
 		params.initilizeBoundries();
 		generateRandomStar(params,-1);
@@ -16,17 +17,19 @@ public class Star {
 	
 	public void generateRandomStar(Parameters params, int indexParamToChange){
 //		Random rand = new Random();
-		List<Integer> minMaxPair;
-
+		List<Integer> inputVector;
+		int index;
 		
 		if(indexParamToChange == -1){ // vektorun tamami random
 			//bos yeni bir vector yarat.
 			parametersVector = new ArrayList<>();
 			
 			//her parametre icin aralik degerleri icinde random sayi uret. Vektor olustur.
-			for (int i = 0; i < params.minMaxBoundryMap.size(); i++) {
-				minMaxPair = params.minMaxBoundryMap.get("param_"+(i+1));
-				parametersVector.add(Population.rand.ints(1, minMaxPair.get(0), minMaxPair.get(1)).toArray()[0]);
+			for (int i = 0; i < Configuration.NUM_PARAMTERS; i++) {
+				inputVector = params.inputVectorsList.get(i);
+				index = Population.rand.ints(1, 0, inputVector.size()).toArray()[0];
+				parametersVector.add(inputVector.get(index));
+			
 			}
 			//ilk vektor icin puanlari 1 olarak ilklendir.
 			/*for (int i = 0; i < params.pointsList.size(); i++) {

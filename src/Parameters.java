@@ -6,13 +6,19 @@ import java.util.Map;
 
 public class Parameters {
 	
-	public List <Integer> minMaxValues1; 
-	public List <Integer> minMaxValues2; 
-	public List <Integer> minMaxValues3; 
-	public List <Integer> minMaxValues4; 
-	public List <Integer> minMaxValues5;
+	public List <Integer> input1; 
+	public List <Integer> input2; 
+	public List <Integer> input3; 
+	public List <Integer> input4; 
+	public List <Integer> input5;
+	public List <Integer> input6;
+	public List <Integer> input7;
+	public List <Integer> input8;
+	public List <Integer> input9;
+	public List <Integer> input10;
+	public List <Integer> input11;
 	//public List <Map<Integer,Integer>> pointsList;
-	public Map <String, List<Integer>> minMaxBoundryMap;
+	public List <List<Integer>> inputVectorsList;
 	//public Map <String, List<Integer>> weightMap;
 	
 	public Parameters(int numOfParams){
@@ -26,40 +32,91 @@ public class Parameters {
 
 	}
 	
-	public Map<String, List<Integer>> initilizeBoundries(){
+	public void initilizeBoundries(){
+		inputVectorsList = new ArrayList<>();
 		
-		minMaxBoundryMap = new LinkedHashMap<String, List<Integer>>();
-		
-		minMaxValues1 = new ArrayList<Integer>();
-		minMaxValues2 = new ArrayList<Integer>();
-		minMaxValues3 = new ArrayList<Integer>();
-		minMaxValues4 = new ArrayList<Integer>();
-		minMaxValues5 = new ArrayList<Integer>();
+		input1 = new ArrayList<Integer>();
+		input2 = new ArrayList<Integer>();
+		input3 = new ArrayList<Integer>();
+		input4 = new ArrayList<Integer>();
+		input5 = new ArrayList<Integer>();
+		input6 = new ArrayList<Integer>();
+		input7 = new ArrayList<Integer>();
+		input8 = new ArrayList<Integer>();
+		input9 = new ArrayList<Integer>();
+		input10 = new ArrayList<Integer>();
+		input11 = new ArrayList<Integer>();
 
-		
-		minMaxValues1.add(0,0);//min value
-		minMaxValues1.add(1,2);//max value
-		
-		minMaxValues2.add(0,5);
-		minMaxValues2.add(1,21);
-		
-		minMaxValues3.add(0,0);
-		minMaxValues3.add(1,101);
-		
-		minMaxValues4.add(0,0);
-		minMaxValues4.add(1,6);
-		
-		minMaxValues5.add(0,10);
-		minMaxValues5.add(1,311);
-		
-		minMaxBoundryMap.put("param_1", minMaxValues1);
-		minMaxBoundryMap.put("param_2", minMaxValues2);
-		minMaxBoundryMap.put("param_3", minMaxValues3);
-		minMaxBoundryMap.put("param_4", minMaxValues4);
-		minMaxBoundryMap.put("param_5", minMaxValues5);
+		//dXPos
+		input1.add(0);
+		input1.add(20);
+		input1.add(50);
+		input1.add(75);
+		input1.add(100);
+		input1.add(200);
 
-		return minMaxBoundryMap;
-
+		//dYPos
+		input2.add(0);
+		input2.add(20);
+		input2.add(50);
+		input2.add(75);
+		input2.add(100);
+		input2.add(200);
+		
+		//dzPos
+		input3.add(0);
+		input3.add(20);
+		input3.add(50);
+		input3.add(75);
+		input3.add(100);
+		input3.add(200);
+		
+		//dVx
+		input4.add(-50);
+		input4.add(0);
+		input4.add(50);
+		
+		//dVx
+		input5.add(-50);
+		input5.add(0);
+		input5.add(50);
+		
+		//dhoStatus
+		input6.add(0);
+		input6.add(1);
+		
+		//izTipi
+		input7.add(0);
+		input7.add(1);
+		
+		//dpMu[0]
+		input8.add(1);
+		input8.add(2);
+		
+		//dpMu[1]
+		input9.add(1);
+		input9.add(2);
+				
+		//dpMu[2]
+		input10.add(1);
+		input10.add(4);
+		input10.add(8);
+		
+		//iMuhtSinif
+		for (int i = 0; i < 30; i++) {
+			input11.add((i+1));
+		}
+		inputVectorsList.add(input1);
+		inputVectorsList.add(input2);
+		inputVectorsList.add(input3);
+		inputVectorsList.add(input4);
+		inputVectorsList.add(input5);
+		inputVectorsList.add(input6);
+		inputVectorsList.add(input7);
+		inputVectorsList.add(input8);
+		inputVectorsList.add(input9);
+		inputVectorsList.add(input10);
+		inputVectorsList.add(input11);
 	}
 	
 	/*public void giveWeightToParameters(){

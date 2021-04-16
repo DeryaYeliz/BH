@@ -17,12 +17,13 @@ public class ReportReader {
 		while(sc.hasNext()) {
 			csvElements.add(sc.next());
 		}
-		sc.close();
-		System.out.println(csvElements.get(18));
-		
+		sc.close();		
 		double missedBranches = Integer.valueOf(csvElements.get(17));
 		double coveredBranches = Integer.valueOf(csvElements.get(18));
 		double coverage = coveredBranches / (coveredBranches + missedBranches);
+		System.out.println("missedBranches: " +missedBranches);
+		System.out.println("coveredBranches: " +coveredBranches);
+
 		System.out.println("Coverage: " +coverage);
 
 		return coverage;
