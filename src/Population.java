@@ -18,6 +18,7 @@ public class Population {
 		
 		for (int i = 0; i < Configuration.NUM_STARS; i++) {			
 			stars.add(new Star());
+			//stars.get(i).id = i;
 		}
 	}
 				

@@ -1,11 +1,22 @@
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import destek.Configuration;
 
 public class Main {
-	public static void main2(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 
 		BH bhObject = new BH();
 
@@ -13,14 +24,14 @@ public class Main {
 		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
 			
 			bhObject.updateFitness(bhObject.P);
-			bhObject.moveStars(bhObject.P, bhObject.BH);
+			bhObject.moveStars(bhObject.P, bhObject.starBH);
 			bhObject.updateFitness(bhObject.P);
-			bhObject.R = bhObject.updateRadius(bhObject.P, bhObject.indexOfBH, bhObject.EP);
+			bhObject.R = bhObject.updateRadius(bhObject.P, bhObject.starBH);
 			
 			for (int j = 0; j < Configuration.NUM_STARS; j++) {
-				if(dist(bhObject.BH, bhObject.P.stars.get(j)) < bhObject.R) {
-					//replace //TODO
-					bhObject.P.init();					
+				if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
+					bhObject.P.stars.get(j).isAlive = false;
+					bhObject.P.stars.add(new Star());				
 				}
 			}
 			bhObject.updateFitness(bhObject.P);
@@ -30,9 +41,9 @@ public class Main {
 
 		}
 		printResult(bhObject.P);
-		
+		printMissedBranchesLog(bhObject.P);
 	}
-	public static void main(String[] args) throws IOException {
+	public static void main5(String[] args) throws IOException {
 		
 
 	}
@@ -40,24 +51,25 @@ public class Main {
 		MBH mbhObject = new MBH();
 		boolean improvement = false;
 		BH currentBH;
-		int indexOfBHo;
-		int indexOfBHn;
+		double BHoCoverage;
+		double BHnCoverage;
 		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
 			for (int j = 0; j < Configuration.NUM_BLACKHOLES; j++) {
 				currentBH = mbhObject.BHs.get(j);
-				currentBH.moveStars(currentBH.P, currentBH.BH);
-				currentBH.R = currentBH.updateRadius(currentBH.P, currentBH.indexOfBH, currentBH.EP);
+				currentBH.moveStars(currentBH.P, currentBH.starBH);
+				currentBH.R = currentBH.updateRadius(currentBH.P, currentBH.starBH);
 				for (int k = 0; k < Configuration.NUM_STARS; k++) {
-					if(dist(currentBH.BH, currentBH.P.stars.get(k)) < currentBH.R) {
-						//replace //TODO
-						currentBH.P.init();					
+					if(dist(currentBH.starBH, currentBH.P.stars.get(k)) < currentBH.R) {
+						//replace //TODO						
+						currentBH.P.stars.get(j).isAlive = false;
+						currentBH.P.stars.add(new Star());	
 					}
 				}
-				indexOfBHo = currentBH.indexOfBH;
+				BHoCoverage = currentBH.starBH.coverage; 
 				currentBH.updateFitness(currentBH.P);
-				indexOfBHn = currentBH.indexOfBH;
+				BHnCoverage = currentBH.starBH.coverage; 
 
-				improvement = isImprovement(indexOfBHo,indexOfBHn, currentBH.EP);
+				improvement = isImprovement(BHoCoverage,BHnCoverage);
 				
 				if(!improvement) {
 					mbhObject.Es.set(j, mbhObject.Es.get(j) - 1 ); 
@@ -97,9 +109,9 @@ public class Main {
 		return Math.sqrt(sumOfSquares);
 	}
 	
-	public static boolean isImprovement(int indexOfBHo, int indexOfBHn, List<Double> EP) {
+	public static boolean isImprovement(double BHoCoverage, double BHnCoverage) {
 		
-		if(EP.get(indexOfBHn) < EP.get(indexOfBHo)) {
+		if(BHnCoverage < BHoCoverage) {
 			return true;
 		}
 		else
@@ -115,6 +127,19 @@ public class Main {
 
 			}
 			System.out.println();
+		}
+	}
+	public static void printMissedBranchesLog(Population P) throws IOException {
+		Path path = Paths.get(Configuration.pathLog, Configuration.fileNameLog);
+		Files.deleteIfExists(path);
+		Files.write(path, "".getBytes(), StandardOpenOption.CREATE_NEW);
+		String logLine;
+		for (int i = 0; i < P.stars.size(); i++) {
+			logLine = "StarID: " +  String.valueOf(P.stars.get(i).id + ", IsAlive: " + P.stars.get(i).isAlive
+					+ ", MissedBranches: " + P.stars.get(i).branchMissedVector.toString());
+			Files.write(path, logLine.getBytes(), StandardOpenOption.APPEND );
+			Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
+
 		}
 	}
 }

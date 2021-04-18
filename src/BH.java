@@ -9,15 +9,15 @@ import destek.Coverage;
 
 public class BH {
 	
-	public Star BH;
-	public int indexOfBH;
-	public List<Double> EP; 
+	public Star starBH;
+	//public int indexOfBH;
+	//public List<Double> EP; 
 	public double R;
 	Population P;
 	
 	
 	public BH() {
-		EP = new ArrayList<Double>();
+		//EP = new ArrayList<Double>();
 		P = new Population();
 		P.init();
 
@@ -25,30 +25,37 @@ public class BH {
 
 	public void updateFitness(Population P) throws IOException{
 		double coverageValue;
-		for (int i = 0; i < Configuration.NUM_STARS; i++) {
-			//coverageValue = 50; 
-			Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);
-			coverageValue = Coverage.getCoverage(); 
-			if(coverageValue != 0)
-				EP.add(1/coverageValue);
-			else
-				EP.add(0.0);
-			Coverage.inputListforCoverage.clear();
+		double minCoverage = 1;
+		for (int i = 0; i < P.stars.size(); i++) {
+			if(P.stars.get(i).isAlive) {
+				Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);
+				coverageValue = Coverage.getCoverage(); 
+				if(coverageValue != 0)
+					P.stars.get(i).coverage = (1/coverageValue);
+				else
+					P.stars.get(i).coverage = 0.0;
+				
+				if(P.stars.get(i).coverage < minCoverage) {
+					minCoverage = P.stars.get(i).coverage;
+			        starBH = P.stars.get(i);
+				}
 
+				Coverage.readHtmlMissedBranches(P.stars.get(i).branchMissedVector);
+				Coverage.inputListforCoverage.clear();	
+			}
+				
 		}
   
-        double best = Collections.min(EP);
-        indexOfBH = EP.indexOf(best);
-        BH = P.stars.get(indexOfBH);
 	}
 
-	public double updateRadius(Population P, int indexOfBH, List<Double> EP){
+	public double updateRadius(Population P, Star bh){
 		double sum = 0;
 		double R;
-		for (int i = 0; i < Configuration.NUM_STARS; i++) {
-			sum = sum + EP.get(i);
+		for (int i = 0; i < P.stars.size(); i++) {
+			if(P.stars.get(i).isAlive)
+				sum = sum + P.stars.get(i).coverage;
 		}
-		R = EP.get(indexOfBH) / sum;
+		R = bh.coverage / sum;
 		return R;
 		
 	}
@@ -72,22 +79,23 @@ public class BH {
 				//BH ve current in parametre tanimlarindaki indislerini al.
 				BHindex = BH.params.inputVectorsList.get(j).indexOf(BHValue);
 				currentIndex = BH.params.inputVectorsList.get(j).indexOf(currentValue);
-				
-				//start indisi kucuk olan olsun
-				if(BHindex<currentIndex) {
-					startRand = BHindex;
-					endRand = currentIndex;
-				}else {
-					startRand = currentIndex;
-					endRand = BHindex;
-				} 
-				//indiste random sayi uret. Parameters in o parametresini al.
-				randomValue = startRand + (new Random().nextDouble() * (endRand-startRand));
-				randomValue = Math.round(randomValue);//yuvarla
-				
-				newValue = BH.params.inputVectorsList.get(j).get((int)randomValue);
-				P.stars.get(i).parametersVector.set(j, newValue);
-				
+				if(BHValue != currentValue) {
+					//start indisi kucuk olan olsun
+					if(BHindex<currentIndex) {
+						startRand = BHindex;
+						endRand = currentIndex - 1;
+					}else {
+						startRand = currentIndex + 1;
+						endRand = BHindex;
+					} 
+					//indiste random sayi uret. Parameters in o parametresini al.
+					randomValue = startRand + (new Random().nextDouble() * (endRand-startRand));
+					randomValue = Math.round(randomValue);//yuvarla
+					
+					newValue = BH.params.inputVectorsList.get(j).get((int)randomValue);
+					P.stars.get(i).parametersVector.set(j, newValue);
+				}
+					
 			}
 		}
 				

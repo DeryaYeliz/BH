@@ -5,14 +5,23 @@ import destek.Configuration;
 
 public class Star {
 
-
+	
 	public List<Integer> parametersVector; 
 	Parameters params;
+	public List<Integer> branchMissedVector; 
+	public int id;
+	public double coverage;
+	public boolean isAlive = true;
+	
+	
 	public Star() {
 		parametersVector = new ArrayList<Integer>();
+		branchMissedVector = new ArrayList<Integer>();
 		params = new Parameters(Configuration.NUM_PARAMTERS);
 		params.initilizeBoundries();
 		generateRandomStar(params,-1);
+		id = Configuration.starID;
+		Configuration.starID ++;
 	}
 	
 	public void generateRandomStar(Parameters params, int indexParamToChange){

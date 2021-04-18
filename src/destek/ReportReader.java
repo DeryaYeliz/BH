@@ -20,7 +20,7 @@ public class ReportReader {
 		sc.close();		
 		double missedBranches = Integer.valueOf(csvElements.get(17));
 		double coveredBranches = Integer.valueOf(csvElements.get(18));
-		double coverage = coveredBranches / (coveredBranches + missedBranches);
+		double coverage = (coveredBranches / (coveredBranches + missedBranches))*100;
 		System.out.println("missedBranches: " +missedBranches);
 		System.out.println("coveredBranches: " +coveredBranches);
 

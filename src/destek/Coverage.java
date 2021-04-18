@@ -8,6 +8,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 public class Coverage {
 	public static double coverage;
 	public static Path path;
@@ -52,6 +57,68 @@ public class Coverage {
 		return output.toString();
 	}	
 	
+	public static void readHtmlMissedBranches(List<Integer> branchMissedVector) throws IOException {
+		File input = new File(Configuration.pathBranchFile);
+		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
+		Elements elements1 = doc.getElementsByClass("pc bpc");
+		Elements elements2 = doc.getElementsByClass("nc bnc");
+		Elements elements3 = doc.getElementsByClass("fc bfc");
+		String line;
+		String [] words;
+		int totalBranch = 0;
+		int missedBranch = 0;
+		 for (Element e : elements1) {
+			 line = e.attributes().get("title");
+			 words = line.split(" ");	 
+			 	if(!words[0].equals("All")) {
+					 totalBranch = Integer.valueOf(words[2]);
+					 missedBranch = Integer.valueOf(words[0]);
+				 }else {
+					 totalBranch = Integer.valueOf(words[1]);
+					 if(words[3] == "missed.") {
+						 missedBranch = totalBranch;
+					 }else {
+						 missedBranch = 0;
+					 }
+				 }
+			 	branchMissedVector.add(missedBranch);
+		     //System.out.println( e.attributes().get("title"));
+		 }
+		 for (Element e : elements2) {
+			 line = e.attributes().get("title");
+			 words = line.split(" ");	 
+			 	if(!words[0].equals("All")) {
+					 totalBranch = Integer.valueOf(words[2]);
+					 missedBranch = Integer.valueOf(words[0]);
+				 }else {
+					 totalBranch = Integer.valueOf(words[1]);
+					 if(words[3] == "missed.") {
+						 missedBranch = totalBranch;
+					 }else {
+						 missedBranch = 0;
+					 }
+				 }
+		     //System.out.println( e.attributes().get("title"));
+			 	branchMissedVector.add(missedBranch);
+		}
+		 for (Element e : elements3) {
+			 line = e.attributes().get("title");
+			 words = line.split(" ");	 
+			 	if(!words[0].equals("All")) {
+					 totalBranch = Integer.valueOf(words[2]);
+					 missedBranch = Integer.valueOf(words[0]);
+				 }else {
+					 totalBranch = Integer.valueOf(words[1]);
+					 if(words[3] == "missed.") {
+						 missedBranch = totalBranch;
+					 }else {
+						 missedBranch = 0;
+					 }
+				 }
+		     //System.out.println( e.attributes().get("title"));
+			 	branchMissedVector.add(missedBranch);
+		 }
+	}
 	
 
 }
