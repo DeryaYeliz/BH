@@ -71,32 +71,35 @@ public class BH {
 		int BHindex;
 		int currentIndex;
 		
-		for (int i = 0; i < Configuration.NUM_STARS; i++) {
-			for (int j = 0; j < Configuration.NUM_PARAMTERS; j++) {
-				currentValue = P.stars.get(i).parametersVector.get(j);
-				BHValue = BH.parametersVector.get(j);
-				
-				//BH ve current in parametre tanimlarindaki indislerini al.
-				BHindex = BH.params.inputVectorsList.get(j).indexOf(BHValue);
-				currentIndex = BH.params.inputVectorsList.get(j).indexOf(currentValue);
-				if(BHValue != currentValue) {
-					//start indisi kucuk olan olsun
-					if(BHindex<currentIndex) {
-						startRand = BHindex;
-						endRand = currentIndex - 1;
-					}else {
-						startRand = currentIndex + 1;
-						endRand = BHindex;
-					} 
-					//indiste random sayi uret. Parameters in o parametresini al.
-					randomValue = startRand + (new Random().nextDouble() * (endRand-startRand));
-					randomValue = Math.round(randomValue);//yuvarla
+		for (int i = 0; i < P.stars.size(); i++) {
+			if(P.stars.get(i).isAlive) {
+				for (int j = 0; j < Configuration.NUM_PARAMTERS; j++) {
+					currentValue = P.stars.get(i).parametersVector.get(j);
+					BHValue = BH.parametersVector.get(j);
 					
-					newValue = BH.params.inputVectorsList.get(j).get((int)randomValue);
-					P.stars.get(i).parametersVector.set(j, newValue);
+					//BH ve current in parametre tanimlarindaki indislerini al.
+					BHindex = BH.params.inputVectorsList.get(j).indexOf(BHValue);
+					currentIndex = BH.params.inputVectorsList.get(j).indexOf(currentValue);
+					if(BHValue != currentValue) {
+						//start indisi kucuk olan olsun
+						if(BHindex<currentIndex) {
+							startRand = BHindex;
+							endRand = currentIndex - 1;
+						}else {
+							startRand = currentIndex + 1;
+							endRand = BHindex;
+						} 
+						//indiste random sayi uret. Parameters in o parametresini al.
+						randomValue = startRand + (new Random().nextDouble() * (endRand-startRand));
+						randomValue = Math.round(randomValue);//yuvarla
+						
+						newValue = BH.params.inputVectorsList.get(j).get((int)randomValue);
+						P.stars.get(i).parametersVector.set(j, newValue);
+					}
+						
 				}
-					
 			}
+			
 		}
 				
 	}

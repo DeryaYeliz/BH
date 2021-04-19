@@ -17,6 +17,8 @@ public class Parameters {
 	public List <Integer> input9;
 	public List <Integer> input10;
 	public List <Integer> input11;
+	public List <Integer> input12;
+
 	//public List <Map<Integer,Integer>> pointsList;
 	public List <List<Integer>> inputVectorsList;
 	//public Map <String, List<Integer>> weightMap;
@@ -46,6 +48,7 @@ public class Parameters {
 		input9 = new ArrayList<Integer>();
 		input10 = new ArrayList<Integer>();
 		input11 = new ArrayList<Integer>();
+		input12 = new ArrayList<Integer>();
 
 		//dXPos
 		input1.add(0);
@@ -76,7 +79,7 @@ public class Parameters {
 		input4.add(0);
 		input4.add(50);
 		
-		//dVx
+		//dVy
 		input5.add(-50);
 		input5.add(0);
 		input5.add(50);
@@ -106,6 +109,13 @@ public class Parameters {
 		for (int i = 0; i < 30; i++) {
 			input11.add((i+1));
 		}
+		
+		//dGercekHiz
+		input12.add(10);
+		input12.add(270);
+		input12.add(500);
+		
+		
 		inputVectorsList.add(input1);
 		inputVectorsList.add(input2);
 		inputVectorsList.add(input3);
@@ -117,6 +127,8 @@ public class Parameters {
 		inputVectorsList.add(input9);
 		inputVectorsList.add(input10);
 		inputVectorsList.add(input11);
+		inputVectorsList.add(input12);
+
 	}
 	
 	/*public void giveWeightToParameters(){

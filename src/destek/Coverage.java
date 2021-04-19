@@ -58,6 +58,7 @@ public class Coverage {
 	}	
 	
 	public static void readHtmlMissedBranches(List<Integer> branchMissedVector) throws IOException {
+		branchMissedVector.clear();
 		File input = new File(Configuration.pathBranchFile);
 		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
 		Elements elements1 = doc.getElementsByClass("pc bpc");

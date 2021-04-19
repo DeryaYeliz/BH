@@ -28,7 +28,7 @@ public class Main {
 			bhObject.updateFitness(bhObject.P);
 			bhObject.R = bhObject.updateRadius(bhObject.P, bhObject.starBH);
 			
-			for (int j = 0; j < Configuration.NUM_STARS; j++) {
+			for (int j = 0; j < bhObject.P.stars.size(); j++) {
 				if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
 					bhObject.P.stars.get(j).isAlive = false;
 					bhObject.P.stars.add(new Star());				
@@ -41,7 +41,7 @@ public class Main {
 
 		}
 		printResult(bhObject.P);
-		printMissedBranchesLog(bhObject.P);
+		printMissedBranchesLog(bhObject.P,Configuration.pathLog, Configuration.fileNameLog);
 	}
 	public static void main5(String[] args) throws IOException {
 		
@@ -58,7 +58,7 @@ public class Main {
 				currentBH = mbhObject.BHs.get(j);
 				currentBH.moveStars(currentBH.P, currentBH.starBH);
 				currentBH.R = currentBH.updateRadius(currentBH.P, currentBH.starBH);
-				for (int k = 0; k < Configuration.NUM_STARS; k++) {
+				for (int k = 0; k < currentBH.P.stars.size(); k++) {
 					if(dist(currentBH.starBH, currentBH.P.stars.get(k)) < currentBH.R) {
 						//replace //TODO						
 						currentBH.P.stars.get(j).isAlive = false;
@@ -87,8 +87,9 @@ public class Main {
 		}
 		
 		for (int i = 0; i < Configuration.NUM_BLACKHOLES; i++) {
-			System.out.println("BH Loop"+ (i+1) +": ");
+			System.out.println("BLACKHOLE"+ (i+1) +": ");
 			printResult(mbhObject.BHs.get(i).P);
+			printMissedBranchesLog(mbhObject.BHs.get(i).P, Configuration.pathLog, Configuration.fileNameLog + "_MBH" + (i+1));
 		}
 	}
 	
@@ -120,7 +121,7 @@ public class Main {
 	
 	public static void printResult(Population P) {
 		System.out.println("Solution space: ");
-		for(int i = 0; i < Configuration.NUM_STARS; i++) {
+		for(int i = 0; i < P.stars.size(); i++) {
 			System.out.print("Star" + (i+1) + ": ");
 			for(int j = 0; j < Configuration.NUM_PARAMTERS; j++) {
 				System.out.print(P.stars.get(i).parametersVector.get(j) + " ");
@@ -129,14 +130,15 @@ public class Main {
 			System.out.println();
 		}
 	}
-	public static void printMissedBranchesLog(Population P) throws IOException {
-		Path path = Paths.get(Configuration.pathLog, Configuration.fileNameLog);
+	public static void printMissedBranchesLog(Population P, String pathLog, String fileNameLog) throws IOException {
+		Path path = Paths.get(pathLog, fileNameLog);
 		Files.deleteIfExists(path);
 		Files.write(path, "".getBytes(), StandardOpenOption.CREATE_NEW);
 		String logLine;
 		for (int i = 0; i < P.stars.size(); i++) {
 			logLine = "StarID: " +  String.valueOf(P.stars.get(i).id + ", IsAlive: " + P.stars.get(i).isAlive
-					+ ", MissedBranches: " + P.stars.get(i).branchMissedVector.toString());
+					+ ", MissedBranches: " + P.stars.get(i).branchMissedVector.toString()
+					+ "Coverage: " + 1/P.stars.get(i).coverage);
 			Files.write(path, logLine.getBytes(), StandardOpenOption.APPEND );
 			Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
 
