@@ -40,6 +40,11 @@ public class Main {
 				//Break;
 
 		}
+		
+		//Tum starlari ver ve komple population in coverage ini hesapla:
+		bhObject.calculatePopulationsCoverage(bhObject.P);
+		
+		//Log yaz
 		printResult(bhObject.P);
 		printMissedBranchesLog(bhObject.P,Configuration.pathLog, Configuration.fileNameLog);
 	}
@@ -143,5 +148,7 @@ public class Main {
 			Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
 
 		}
+		Files.write(path, ("TotalCov: " + P.totalCoverage).getBytes(), StandardOpenOption.APPEND);
+
 	}
 }

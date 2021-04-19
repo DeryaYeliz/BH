@@ -7,6 +7,7 @@ public class Population {
 	
 	public List<Star> stars;
 	public static Random rand;
+	double totalCoverage;
 
 	
 	public Population() {

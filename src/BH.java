@@ -15,7 +15,6 @@ public class BH {
 	public double R;
 	Population P;
 	
-	
 	public BH() {
 		//EP = new ArrayList<Double>();
 		P = new Population();
@@ -47,7 +46,16 @@ public class BH {
 		}
   
 	}
-
+	public void calculatePopulationsCoverage(Population P) throws IOException {
+		double coverageValue;
+		for (int i = 0; i < P.stars.size(); i++) {
+			if(P.stars.get(i).isAlive) {
+				Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);		
+			}
+		}
+		coverageValue = Coverage.getCoverage(); 
+		P.totalCoverage = coverageValue;
+	}
 	public double updateRadius(Population P, Star bh){
 		double sum = 0;
 		double R;
