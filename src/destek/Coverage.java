@@ -29,13 +29,16 @@ public class Coverage {
 		//Terminalden maven ile algoyu cagir ve coverage raporu olusmasini sagla.					
 		String command = "/usr/local/bin/mvn test";
 		String output = executeCommand(command, null, new File(Configuration.pathAlgo));
-		System.out.println(output);
-		
+		//System.out.println(output);
+		command = "rm /Users/yeliz/eclipse-workspace/MechulAlgoritma/target/jacoco.exec";
+		output = executeCommand(command, null, new File(Configuration.pathAlgo));
+
 		//Coverage raporu oku
 		
 		path = Paths.get(Configuration.directoryCovReport, Configuration.fileNameCovReport);
 		coverage = ReportReader.csvParser(path);
-		
+		System.out.println("COVERAGE: " +coverage);
+
 		return coverage;
 	}
 		
@@ -51,6 +54,7 @@ public class Coverage {
 			while ((line = reader.readLine())!= null) {
 				output.append(line + "\n");
 			}
+			p.destroyForcibly();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

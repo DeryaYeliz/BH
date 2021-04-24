@@ -19,21 +19,32 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 
 		BH bhObject = new BH();
+		int starListeBoyu = Configuration.NUM_STARS;
+		int ekStarListeBoyu = 0;
+		bhObject.updateFitness(bhObject.P);
 
-		
 		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
-			
-			bhObject.updateFitness(bhObject.P);
+			System.out.println("ITERASYON: " + (i+1));
+
 			bhObject.moveStars(bhObject.P, bhObject.starBH);
 			bhObject.updateFitness(bhObject.P);
 			bhObject.R = bhObject.updateRadius(bhObject.P, bhObject.starBH);
-			
-			for (int j = 0; j < bhObject.P.stars.size(); j++) {
-				if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
-					bhObject.P.stars.get(j).isAlive = false;
-					bhObject.P.stars.add(new Star());				
+			System.out.println("R: " + bhObject.R);
+			for (int j = 0; j < starListeBoyu; j++) {
+				if(bhObject.P.stars.get(j).isAlive && bhObject.starBH != bhObject.P.stars.get(j)) {
+					System.out.println("dist: " + dist(bhObject.starBH, bhObject.P.stars.get(j)));
+					if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
+						bhObject.P.stars.get(j).isAlive = false;
+						bhObject.P.stars.add(new Star());
+						ekStarListeBoyu++;
+						System.out.println("ekStarListeBoyu:" + ekStarListeBoyu);
+					}
 				}
 			}
+			starListeBoyu = starListeBoyu + ekStarListeBoyu;
+			ekStarListeBoyu = 0;
+			System.out.println("starListeBoyu:" + starListeBoyu);
+
 			bhObject.updateFitness(bhObject.P);
 			
 			//TODO: if stop criteria is met
@@ -63,11 +74,13 @@ public class Main {
 				currentBH = mbhObject.BHs.get(j);
 				currentBH.moveStars(currentBH.P, currentBH.starBH);
 				currentBH.R = currentBH.updateRadius(currentBH.P, currentBH.starBH);
-				for (int k = 0; k < currentBH.P.stars.size(); k++) {
-					if(dist(currentBH.starBH, currentBH.P.stars.get(k)) < currentBH.R) {
-						//replace //TODO						
-						currentBH.P.stars.get(j).isAlive = false;
-						currentBH.P.stars.add(new Star());	
+				for (int k = 0; k < Configuration.NUM_STARS; k++) {
+					if(currentBH.P.stars.get(j).isAlive && currentBH.starBH != currentBH.P.stars.get(j)) {
+						if(dist(currentBH.starBH, currentBH.P.stars.get(k)) < currentBH.R) {
+							//replace //TODO						
+							currentBH.P.stars.get(j).isAlive = false;
+							currentBH.P.stars.add(new Star());
+						}
 					}
 				}
 				BHoCoverage = currentBH.starBH.coverage; 
@@ -105,14 +118,25 @@ public class Main {
 	
 	public static double dist(Star BH, Star S) {
 		//TODO: disti nasıl hesaplayacağını düşün.
-		int sumOfSquares = 0;
+		/*int sumOfSquares = 0;
 		int square = 0;
 		for (int i = 0; i < Configuration.NUM_PARAMTERS; i++) {
 			square = (S.parametersVector.get(i) - BH.parametersVector.get(i)) * (S.parametersVector.get(i) - BH.parametersVector.get(i));
 			sumOfSquares = sumOfSquares + square;
 		}
-		
-		return Math.sqrt(sumOfSquares);
+		return Math.sqrt(sumOfSquares);*/
+
+		int indexBH;
+		int indexS;
+		int diff = 0;
+		int sumOfAllParametersSpace = 0;
+		for (int i = 0; i < BH.params.inputVectorsList.size(); i++) {
+			indexBH = BH.params.inputVectorsList.get(i).indexOf(BH.parametersVector.get(i));
+			indexS = BH.params.inputVectorsList.get(i).indexOf(S.parametersVector.get(i));
+			diff = diff + Math.abs(indexS-indexBH);
+			sumOfAllParametersSpace = sumOfAllParametersSpace + BH.params.inputVectorsList.get(i).size();
+		}
+		return (double)diff/sumOfAllParametersSpace;
 	}
 	
 	public static boolean isImprovement(double BHoCoverage, double BHnCoverage) {
@@ -130,7 +154,6 @@ public class Main {
 			System.out.print("Star" + (i+1) + ": ");
 			for(int j = 0; j < Configuration.NUM_PARAMTERS; j++) {
 				System.out.print(P.stars.get(i).parametersVector.get(j) + " ");
-
 			}
 			System.out.println();
 		}
@@ -145,6 +168,9 @@ public class Main {
 					+ ", MissedBranches: " + P.stars.get(i).branchMissedVector.toString()
 					+ "Coverage: " + 1/P.stars.get(i).coverage);
 			Files.write(path, logLine.getBytes(), StandardOpenOption.APPEND );
+			Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
+			Files.write(path, ("Vector:" + String.valueOf(P.stars.get(i).id) +" "+ P.stars.get(i).parametersVector.toString()).getBytes(), StandardOpenOption.APPEND );
+			Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
 			Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
 
 		}
