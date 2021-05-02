@@ -27,24 +27,30 @@ public class BH {
 		double minCoverage = 1;
 		for (int i = 0; i < P.stars.size(); i++) {
 			if(P.stars.get(i).isAlive) {
-				Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);
-				coverageValue = Coverage.getCoverage(); 
-				if(coverageValue != 0)
-					P.stars.get(i).coverage = (1/coverageValue);
-				else
-					P.stars.get(i).coverage = 0.0;
-				
+				if(P.stars.get(i).isNew) {
+					Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);
+					coverageValue = Coverage.getCoverage(); 
+					if(coverageValue != 0)
+						P.stars.get(i).coverage = (1/coverageValue);
+					else
+						P.stars.get(i).coverage = 0.0;
+					
+					Coverage.readHtmlMissedBranches(P.stars.get(i).branchMissedVector);
+					Coverage.inputListforCoverage.clear();	
+					
+					P.stars.get(i).isNew = false;
+				}
 				if(P.stars.get(i).coverage < minCoverage) {
 					minCoverage = P.stars.get(i).coverage;
 			        starBH = P.stars.get(i);
 				}
-
-				Coverage.readHtmlMissedBranches(P.stars.get(i).branchMissedVector);
-				Coverage.inputListforCoverage.clear();	
+				
 			}
 				
+			
+			
 		}
-  
+
 	}
 	public void calculatePopulationsCoverage(Population P) throws IOException {
 		double coverageValue;
@@ -55,6 +61,7 @@ public class BH {
 		}
 		coverageValue = Coverage.getCoverage(); 
 		P.totalCoverage = coverageValue;
+		Coverage.inputListforCoverage.clear();
 	}
 	public double updateRadius(Population P, Star bh){
 		double sum = 0;
@@ -104,7 +111,8 @@ public class BH {
 						newValue = BH.params.inputVectorsList.get(j).get((int)randomValue);
 						P.stars.get(i).parametersVector.set(j, newValue);
 					}
-						
+					P.stars.get(i).isNew = true;
+	
 				}
 			}
 			

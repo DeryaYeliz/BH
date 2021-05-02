@@ -12,11 +12,15 @@ public class Star {
 	public int id;
 	public double coverage;
 	public boolean isAlive = true;
-	
+	public boolean isNew = true;
+
+	public List<Double> coverageHistory; 
+
 	
 	public Star() {
 		parametersVector = new ArrayList<Integer>();
 		branchMissedVector = new ArrayList<Integer>();
+		coverageHistory =  new ArrayList<Double>();
 		params = new Parameters(Configuration.NUM_PARAMTERS);
 		params.initilizeBoundries();
 		generateRandomStar(params,-1);

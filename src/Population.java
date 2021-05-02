@@ -8,10 +8,12 @@ public class Population {
 	public List<Star> stars;
 	public static Random rand;
 	double totalCoverage;
+	public List<Double> totalCoverageHistory;
 
 	
 	public Population() {
 		this.stars = new ArrayList<Star>();
+		totalCoverageHistory = new ArrayList<Double>();
 		rand = new Random();
 	}
 

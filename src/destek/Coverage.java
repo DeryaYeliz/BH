@@ -80,7 +80,7 @@ public class Coverage {
 					 missedBranch = Integer.valueOf(words[0]);
 				 }else {
 					 totalBranch = Integer.valueOf(words[1]);
-					 if(words[3] == "missed.") {
+					 if(words[3].equals("missed.")) {
 						 missedBranch = totalBranch;
 					 }else {
 						 missedBranch = 0;
@@ -97,7 +97,7 @@ public class Coverage {
 					 missedBranch = Integer.valueOf(words[0]);
 				 }else {
 					 totalBranch = Integer.valueOf(words[1]);
-					 if(words[3] == "missed.") {
+					 if(words[3].equals("missed.")) {
 						 missedBranch = totalBranch;
 					 }else {
 						 missedBranch = 0;
@@ -114,7 +114,7 @@ public class Coverage {
 					 missedBranch = Integer.valueOf(words[0]);
 				 }else {
 					 totalBranch = Integer.valueOf(words[1]);
-					 if(words[3] == "missed.") {
+					 if(words[3].equals("missed.")) {
 						 missedBranch = totalBranch;
 					 }else {
 						 missedBranch = 0;
