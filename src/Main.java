@@ -244,11 +244,13 @@ public class Main {
 		Files.deleteIfExists(path2);
 		Files.write(path2, "".getBytes(), StandardOpenOption.CREATE_NEW);
 		
+		Files.write(path2, P.totalCoverageHistory.toString().getBytes(), StandardOpenOption.APPEND );
+		Files.write(path2, "\n".getBytes(), StandardOpenOption.APPEND );
+
 		for (int i = 0; i < P.stars.size(); i++) {
 			Files.write(path2, P.stars.get(i).coverageHistory.toString().getBytes(), StandardOpenOption.APPEND );
 			Files.write(path2, "\n".getBytes(), StandardOpenOption.APPEND );
 		}
-		Files.write(path2, P.totalCoverageHistory.toString().getBytes(), StandardOpenOption.APPEND );
 	}
 	
 	public static double calculateMissedBranchRatio(Star starBH, Star S) {

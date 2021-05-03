@@ -2,9 +2,9 @@ package destek;
 
 public class Configuration {
 
-	public static final int NUM_STARS = 5;
+	public static final int NUM_STARS = 10;
 	public static final int NUM_PARAMTERS = 12;
-	public static final int NUM_ITERATION = 2;
+	public static final int NUM_ITERATION = 50;
 	public static final int NUM_BLACKHOLES = 1;
 	public static final int E_MAX = 50;
 	public static final int E_THRESHOLD = 10;
