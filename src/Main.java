@@ -53,14 +53,14 @@ public class Main {
 			
 			for (int j = 0; j < starListeBoyu; j++) {
 				if(bhObject.P.stars.get(j).isAlive && bhObject.starBH != bhObject.P.stars.get(j)) {
-					/*System.out.println("dist: " + dist(bhObject.starBH, bhObject.P.stars.get(j)));
+					//System.out.println("dist: " + dist(bhObject.starBH, bhObject.P.stars.get(j)));
 					if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
 						bhObject.P.stars.get(j).isAlive = false;
 						bhObject.P.stars.add(new Star());
 						ekStarListeBoyu++;
-						System.out.println("ekStarListeBoyu:" + ekStarListeBoyu);
-					}*/
-					ratio = calculateMissedBranchRatio(bhObject.starBH,bhObject.P.stars.get(j));
+						//System.out.println("ekStarListeBoyu:" + ekStarListeBoyu);
+					}
+					/*ratio = calculateMissedBranchRatio(bhObject.starBH,bhObject.P.stars.get(j));
 					System.out.println("Ratio: " + ratio);
 
 					if(ratio < 1.0) {
@@ -68,7 +68,7 @@ public class Main {
 						//bhObject.P.stars.get(j).coverage = 0.0;
 						bhObject.P.stars.add(new Star());
 						ekStarListeBoyu++;
-					}
+					}*/
 				}
 				
 			}
@@ -273,11 +273,14 @@ public class Main {
 			
 		}
 		//starIsWorse = starIsWorse + (starAndBHSame/2);
+		if(starAndBHSame == starBH.branchMissedVector.size()) {
+			return -1;
+		}
 		
 		if(starIsWorse == 0) {
 			betterOverWorse = 100;
 		}else {
-			betterOverWorse = starIsBetter/starIsWorse;
+			betterOverWorse = (3.0)*starIsBetter/starIsWorse;
 		}
 		return betterOverWorse;
 	}
