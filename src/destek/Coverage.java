@@ -61,7 +61,7 @@ public class Coverage {
 		return output.toString();
 	}	
 	
-	public static void readHtmlMissedBranches(List<Integer> branchMissedVector) throws IOException {
+	public static void readHtmlMissedBranches(List<Double> branchMissedVector) throws IOException {
 		branchMissedVector.clear();
 		File input = new File(Configuration.pathBranchFile);
 		Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
@@ -70,33 +70,33 @@ public class Coverage {
 		Elements elements3 = doc.getElementsByClass("fc bfc");
 		String line;
 		String [] words;
-		int totalBranch = 0;
-		int missedBranch = 0;
+		double totalBranch = 0;
+		double missedBranch = 0;
 		 for (Element e : elements1) {
 			 line = e.attributes().get("title");
 			 words = line.split(" ");	 
 			 	if(!words[0].equals("All")) {
-					 totalBranch = Integer.valueOf(words[2]);
-					 missedBranch = Integer.valueOf(words[0]);
+					 totalBranch = Double.valueOf(words[2]);
+					 missedBranch = Double.valueOf(words[0]);
 				 }else {
-					 totalBranch = Integer.valueOf(words[1]);
+					 totalBranch = Double.valueOf(words[1]);
 					 if(words[3].equals("missed.")) {
 						 missedBranch = totalBranch;
 					 }else {
 						 missedBranch = 0;
 					 }
 				 }
-			 	branchMissedVector.add(missedBranch);
+			 	branchMissedVector.add(missedBranch/totalBranch*100.0);
 		     //System.out.println( e.attributes().get("title"));
 		 }
 		 for (Element e : elements2) {
 			 line = e.attributes().get("title");
 			 words = line.split(" ");	 
 			 	if(!words[0].equals("All")) {
-					 totalBranch = Integer.valueOf(words[2]);
-					 missedBranch = Integer.valueOf(words[0]);
+					 totalBranch = Double.valueOf(words[2]);
+					 missedBranch = Double.valueOf(words[0]);
 				 }else {
-					 totalBranch = Integer.valueOf(words[1]);
+					 totalBranch = Double.valueOf(words[1]);
 					 if(words[3].equals("missed.")) {
 						 missedBranch = totalBranch;
 					 }else {
@@ -104,16 +104,16 @@ public class Coverage {
 					 }
 				 }
 		     //System.out.println( e.attributes().get("title"));
-			 	branchMissedVector.add(missedBranch);
+			 	branchMissedVector.add(missedBranch/totalBranch*100.0);
 		}
 		 for (Element e : elements3) {
 			 line = e.attributes().get("title");
 			 words = line.split(" ");	 
 			 	if(!words[0].equals("All")) {
-					 totalBranch = Integer.valueOf(words[2]);
-					 missedBranch = Integer.valueOf(words[0]);
+					 totalBranch = Double.valueOf(words[2]);
+					 missedBranch = Double.valueOf(words[0]);
 				 }else {
-					 totalBranch = Integer.valueOf(words[1]);
+					 totalBranch = Double.valueOf(words[1]);
 					 if(words[3].equals("missed.")) {
 						 missedBranch = totalBranch;
 					 }else {
@@ -121,7 +121,7 @@ public class Coverage {
 					 }
 				 }
 		     //System.out.println( e.attributes().get("title"));
-			 	branchMissedVector.add(missedBranch);
+			 	branchMissedVector.add(missedBranch/totalBranch*100.0);
 		 }
 	}
 	

@@ -106,7 +106,7 @@ public class Parameters {
 		input10.add(8);
 		
 		//iMuhtSinif
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 4; i++) {
 			input11.add((i+1));
 		}
 		

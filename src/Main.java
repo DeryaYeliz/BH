@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -21,6 +22,7 @@ import destek.Coverage;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
+		long startTime = System.currentTimeMillis();
 		/*List<Integer> branchMissedVector = new ArrayList<>();
 		Coverage.readHtmlMissedBranches(branchMissedVector);*/
 		BH bhObject = new BH();
@@ -54,21 +56,30 @@ public class Main {
 			for (int j = 0; j < starListeBoyu; j++) {
 				if(bhObject.P.stars.get(j).isAlive && bhObject.starBH != bhObject.P.stars.get(j)) {
 					//System.out.println("dist: " + dist(bhObject.starBH, bhObject.P.stars.get(j)));
-					if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
+					/*if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
 						bhObject.P.stars.get(j).isAlive = false;
 						bhObject.P.stars.add(new Star());
 						ekStarListeBoyu++;
 						//System.out.println("ekStarListeBoyu:" + ekStarListeBoyu);
-					}
-					/*ratio = calculateMissedBranchRatio(bhObject.starBH,bhObject.P.stars.get(j));
-					System.out.println("Ratio: " + ratio);
-
-					if(ratio < 1.0) {
-						bhObject.P.stars.get(j).isAlive = false;
-						//bhObject.P.stars.get(j).coverage = 0.0;
-						bhObject.P.stars.add(new Star());
-						ekStarListeBoyu++;
 					}*/
+					ratio = calculateMissedBranchRatio(bhObject.starBH,bhObject.P.stars.get(j));
+					System.out.print("Ratio: " + ratio);
+					if(!isBestInAtLeastOneBranch(bhObject.P, bhObject.P.stars.get(j))) {
+						if(ratio < 1.0) {
+							System.out.println("elendi: ");
+							bhObject.P.stars.get(j).isAlive = false;
+							//bhObject.P.stars.get(j).coverage = 0.0;
+							Star newBornStar = new Star();
+							while(true) {
+								if(isDifferentFromBH(newBornStar, bhObject.starBH)) {
+									bhObject.P.stars.add(newBornStar);
+									ekStarListeBoyu++;
+									break;
+								}
+								newBornStar = new Star();
+							}					
+						}		
+					}
 				}
 				
 			}
@@ -85,8 +96,8 @@ public class Main {
 			//Yeni eklenen star icin
 			bhObject.updateFitness(bhObject.P);	
 			
+			//Starlar icin coverage history tut
 			for (int j = 0; j < starListeBoyu; j++) {			
-				//Starlar icin coverage history tut
 				bhObject.P.stars.get(j).coverageHistory.add(Configuration.timeStamp);			
 				if(bhObject.P.stars.get(j).isAlive) {
 					bhObject.P.stars.get(j).coverageHistory.add(1/bhObject.P.stars.get(j).coverage);
@@ -99,7 +110,25 @@ public class Main {
 		}
 		//Log yaz
 		printResult(bhObject.P);
+		sonDarbe(bhObject.P, bhObject.starBH);
+		//Total Coverege History tut
+		bhObject.calculatePopulationsCoverage(bhObject.P);
+		bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
+		bhObject.P.totalCoverageHistory.add(bhObject.P.totalCoverage);
+		//Starlar icin coverage history tut
+		for (int j = 0; j < starListeBoyu; j++) {			
+			bhObject.P.stars.get(j).coverageHistory.add(Configuration.timeStamp);			
+			if(bhObject.P.stars.get(j).isAlive) {
+				bhObject.P.stars.get(j).coverageHistory.add(1/bhObject.P.stars.get(j).coverage);
+			}else {
+				bhObject.P.stars.get(j).coverageHistory.add(0.0);
+			}
+		}
+		
 		offlineAnalyze(bhObject.P, bhObject.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
+		long endTime = System.currentTimeMillis();
+		System.out.println("DURATION: "+ (endTime-startTime)/60000.0); //dakika
+
 	}
 	public static void main5(String[] args) throws IOException {
 		
@@ -205,7 +234,7 @@ public class Main {
 		Files.deleteIfExists(path);
 		Files.write(path, "".getBytes(), StandardOpenOption.CREATE_NEW);
 		String logLine;
-		List<Integer> diffMissedBranchVector = new ArrayList<Integer>(); 
+		List<Double> diffMissedBranchVector = new ArrayList<Double>(); 
 
 		for (int i = 0; i < P.stars.size(); i++) {
 			logLine = "StarID: " +  String.valueOf(P.stars.get(i).id + ", IsAlive: " + P.stars.get(i).isAlive
@@ -277,11 +306,84 @@ public class Main {
 			return -1;
 		}
 		
-		if(starIsWorse == 0) {
+		if(starIsWorse == 0) {  //kaldir
 			betterOverWorse = 100;
 		}else {
 			betterOverWorse = (3.0)*starIsBetter/starIsWorse;
 		}
 		return betterOverWorse;
+	}
+	
+	public static boolean isBestInAtLeastOneBranch(Population P, Star S) {
+		
+		boolean sIsBest= true;
+		for (int j = 0; j < P.stars.get(0).branchMissedVector.size(); j++) { // her bir branch icin
+			for (int i = 0; i < P.stars.size(); i++) {
+				if(S.id != P.stars.get(i).id ) {
+					if(S.branchMissedVector.get(j) >= P.stars.get(i).branchMissedVector.get(j)) { 
+						sIsBest = false;	
+						break;
+					}
+				}
+				if(sIsBest) {
+					return true;
+				}
+				sIsBest = true;
+				}					
+		}
+		return false;
+	}
+	public static void sonDarbe(Population P, Star BH) {
+//		List <Star> additionalStars = new ArrayList<Star>();
+		double minValue = 1000;
+		Star candidateStar = null;
+		boolean thereIsBetterThanBH = false;
+		
+		//son yidizsayisi-1 yildizi false yap.
+//		for (int i = 0; i < P.stars.size(); i++) {
+//			if(P.stars.get(i).id != BH.id) {
+//				P.stars.get(i).isAlive = false;
+//			}
+//		}
+		for (int j = 0; j < P.stars.get(0).branchMissedVector.size(); j++) {
+			for (int i = 0; i < P.stars.size(); i++) {
+				if(P.stars.get(i).id != BH.id) { //BH disindakilere bak
+					if(P.stars.get(i).branchMissedVector.get(j) < BH.branchMissedVector.get(j)){
+						if(P.stars.get(i).branchMissedVector.get(j) < minValue) {
+							minValue = P.stars.get(i).branchMissedVector.get(j);
+							//candidateStar = P.stars.get(i);
+							thereIsBetterThanBH = true;
+							System.out.println("Better star");
+						}
+					}
+				}
+			}
+			
+			if(thereIsBetterThanBH) {
+				for (int k = 0; k <  P.stars.size(); k++) {
+					if(P.stars.get(k).branchMissedVector.get(j).equals(minValue)) {
+						candidateStar = P.stars.get(k);
+						System.out.println("Canlanan star: "+ candidateStar.id);
+						candidateStar.isAlive = true;
+
+					}
+				}	
+				minValue = 1000;
+				thereIsBetterThanBH = false;
+			}
+	}
+	
+	System.out.print(false);
+	}
+	public static boolean isDifferentFromBH(Star newBorn, Star BH) {
+		boolean isDifferent = false;
+		
+		for (int i = 0; i < BH.parametersVector.size(); i++) {
+			if(!BH.parametersVector.get(i).equals(newBorn.parametersVector.get(i))) {
+				isDifferent = true;
+				break;
+			}
+		}
+		return isDifferent;
 	}
 }

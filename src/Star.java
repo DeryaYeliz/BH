@@ -8,7 +8,7 @@ public class Star {
 	
 	public List<Integer> parametersVector; 
 	Parameters params;
-	public List<Integer> branchMissedVector; 
+	public List<Double> branchMissedVector; 
 	public int id;
 	public double coverage;
 	public boolean isAlive = true;
@@ -19,7 +19,7 @@ public class Star {
 	
 	public Star() {
 		parametersVector = new ArrayList<Integer>();
-		branchMissedVector = new ArrayList<Integer>();
+		branchMissedVector = new ArrayList<Double>();
 		coverageHistory =  new ArrayList<Double>();
 		params = new Parameters(Configuration.NUM_PARAMTERS);
 		params.initilizeBoundries();
