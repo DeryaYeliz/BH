@@ -118,7 +118,7 @@ public class Main {
 		//Log yaz
 		printResult(bhObject.P);
 		bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
-		sonDarbe(bhObject.P, bhObject.starBH,bhObjectBestSnap.P);
+		sonDarbe(bhObject.P, bhObjectBestSnap.starBH,bhObjectBestSnap.P);
 		//Total Coverege History tut
 		bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
 		bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
