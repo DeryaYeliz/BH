@@ -23,9 +23,10 @@ import destek.Coverage;
 public class Main {
 	public static void main(String[] args) throws IOException {
 		long startTime = System.currentTimeMillis();
-		/*List<Integer> branchMissedVector = new ArrayList<>();
-		Coverage.readHtmlMissedBranches(branchMissedVector);*/
+	
+		
 		BH bhObject = new BH();
+		BH bhObjectBestSnap = new BH();
 		int starListeBoyu = Configuration.NUM_STARS;
 		int ekStarListeBoyu = 0;
 		double ratio;
@@ -45,7 +46,8 @@ public class Main {
 		bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
 		bhObject.P.totalCoverageHistory.add(bhObject.P.totalCoverage);
 		Configuration.timeStamp ++;	
-		
+		keepMaxTotalCoverageSnap(bhObject, bhObjectBestSnap);
+
 		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
 			System.out.println("ITERASYON: " + (i+1));
 
@@ -84,17 +86,22 @@ public class Main {
 				
 			}
 
+			
+			//Yeni eklenen star icin
+			bhObject.updateFitness(bhObject.P);	
+			
 			//Total Coverege History tut
 			bhObject.calculatePopulationsCoverage(bhObject.P);
 			bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
 			bhObject.P.totalCoverageHistory.add(bhObject.P.totalCoverage);
 			
+			keepMaxTotalCoverageSnap(bhObject, bhObjectBestSnap);
+
 			starListeBoyu = starListeBoyu + ekStarListeBoyu;
 			ekStarListeBoyu = 0;
 			System.out.println("starListeBoyu:" + starListeBoyu);
 
-			//Yeni eklenen star icin
-			bhObject.updateFitness(bhObject.P);	
+			
 			
 			//Starlar icin coverage history tut
 			for (int j = 0; j < starListeBoyu; j++) {			
@@ -110,12 +117,14 @@ public class Main {
 		}
 		//Log yaz
 		printResult(bhObject.P);
-		sonDarbe(bhObject.P, bhObject.starBH);
+		bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
+		sonDarbe(bhObject.P, bhObject.starBH,bhObjectBestSnap.P);
 		//Total Coverege History tut
-		bhObject.calculatePopulationsCoverage(bhObject.P);
+		bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
 		bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
-		bhObject.P.totalCoverageHistory.add(bhObject.P.totalCoverage);
-		//Starlar icin coverage history tut
+		bhObject.P.totalCoverageHistory.add(bhObjectBestSnap.P.totalCoverage);
+		
+		//Starlar icin coverage history tut bura biraz anlamsiz oldu
 		for (int j = 0; j < starListeBoyu; j++) {			
 			bhObject.P.stars.get(j).coverageHistory.add(Configuration.timeStamp);			
 			if(bhObject.P.stars.get(j).isAlive) {
@@ -125,7 +134,8 @@ public class Main {
 			}
 		}
 		
-		offlineAnalyze(bhObject.P, bhObject.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
+		offlineAnalyze(bhObjectBestSnap.P, bhObjectBestSnap.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
+		sketchGraph(bhObject.P, bhObject.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
 		long endTime = System.currentTimeMillis();
 		System.out.println("DURATION: "+ (endTime-startTime)/60000.0); //dakika
 
@@ -268,19 +278,23 @@ public class Main {
 		
 		
 		
-		//sketch graph
-		Path path2 = Paths.get(pathLog, fileNameGrap);
-		Files.deleteIfExists(path2);
-		Files.write(path2, "".getBytes(), StandardOpenOption.CREATE_NEW);
 		
-		Files.write(path2, P.totalCoverageHistory.toString().getBytes(), StandardOpenOption.APPEND );
-		Files.write(path2, "\n".getBytes(), StandardOpenOption.APPEND );
-
-		for (int i = 0; i < P.stars.size(); i++) {
-			Files.write(path2, P.stars.get(i).coverageHistory.toString().getBytes(), StandardOpenOption.APPEND );
-			Files.write(path2, "\n".getBytes(), StandardOpenOption.APPEND );
-		}
 	}
+	public static void sketchGraph(Population P, Star starBH, String pathLog, String fileNameLog, String fileNameGrap) throws IOException {
+		//sketch graph
+				Path path2 = Paths.get(pathLog, fileNameGrap);
+				Files.deleteIfExists(path2);
+				Files.write(path2, "".getBytes(), StandardOpenOption.CREATE_NEW);
+				
+				Files.write(path2, P.totalCoverageHistory.toString().getBytes(), StandardOpenOption.APPEND );
+				Files.write(path2, "\n".getBytes(), StandardOpenOption.APPEND );
+
+				for (int i = 0; i < P.stars.size(); i++) {
+					Files.write(path2, P.stars.get(i).coverageHistory.toString().getBytes(), StandardOpenOption.APPEND );
+					Files.write(path2, "\n".getBytes(), StandardOpenOption.APPEND );
+				}
+	}
+
 	
 	public static double calculateMissedBranchRatio(Star starBH, Star S) {
 		double SMinusStarBH;
@@ -333,10 +347,9 @@ public class Main {
 		}
 		return false;
 	}
-	public static void sonDarbe(Population P, Star BH) {
+	public static void sonDarbe(Population P, Star BH, Population PbestSnap) {
 //		List <Star> additionalStars = new ArrayList<Star>();
 		double minValue = 1000;
-		Star candidateStar = null;
 		boolean thereIsBetterThanBH = false;
 		
 		//son yidizsayisi-1 yildizi false yap.
@@ -362,10 +375,10 @@ public class Main {
 			if(thereIsBetterThanBH) {
 				for (int k = 0; k <  P.stars.size(); k++) {
 					if(P.stars.get(k).branchMissedVector.get(j).equals(minValue)) {
-						candidateStar = P.stars.get(k);
+						Star candidateStar = P.stars.get(k);
 						System.out.println("Canlanan star: "+ candidateStar.id);
 						candidateStar.isAlive = true;
-
+						PbestSnap.stars.add(candidateStar);
 					}
 				}	
 				minValue = 1000;
@@ -385,5 +398,57 @@ public class Main {
 			}
 		}
 		return isDifferent;
+	}
+	public static void keepMaxTotalCoverageSnap(BH bhObject, BH bhObjectBestSnap) {
+		
+		if(bhObject.P.totalCoverage > bhObject.maxPCoverage) {
+			bhObject.maxPCoverage = bhObject.P.totalCoverage;
+			bhObjectBestSnap.P.totalCoverageHistory.clear();
+			bhObjectBestSnap.P.stars.clear();
+			
+			
+			//starBH kopyala
+			Star s_bh = new Star();
+			s_bh.parametersVector.clear(); //default initilize ettigi icin temizlemem lazim.
+			s_bh.coverage = bhObject.starBH.coverage;
+			s_bh.id = bhObject.starBH.id;
+			s_bh.isAlive = bhObject.starBH.isAlive;
+			s_bh.isNew = bhObject.starBH.isNew;
+			for (int j = 0; j < bhObject.starBH.branchMissedVector.size(); j++) {
+				s_bh.branchMissedVector.add(bhObject.starBH.branchMissedVector.get(j));
+			}
+			for (int j = 0; j < bhObject.starBH.coverageHistory.size(); j++) {
+				s_bh.coverageHistory.add(bhObject.starBH.coverageHistory.get(j));
+			}
+			for (int j = 0; j < bhObject.starBH.parametersVector.size(); j++) {
+				s_bh.parametersVector.add(bhObject.starBH.parametersVector.get(j));
+			}
+			bhObjectBestSnap.starBH = s_bh;
+			
+			//P kopyala
+			bhObjectBestSnap.P.totalCoverage = bhObject.P.totalCoverage; 
+			for (int i = 0; i < bhObject.P.stars.size(); i++) {
+				Star s = new Star();
+				s.parametersVector.clear(); //default initilize ettigi icin temizlemem lazim.
+				s.coverage = bhObject.P.stars.get(i).coverage;
+				s.id = bhObject.P.stars.get(i).id;
+				s.isAlive = bhObject.P.stars.get(i).isAlive;
+				s.isNew = bhObject.P.stars.get(i).isNew;
+				for (int j = 0; j < bhObject.P.stars.get(i).branchMissedVector.size(); j++) {
+					s.branchMissedVector.add(bhObject.P.stars.get(i).branchMissedVector.get(j));
+				}
+				for (int j = 0; j < bhObject.P.stars.get(i).coverageHistory.size(); j++) {
+					s.coverageHistory.add(bhObject.P.stars.get(i).coverageHistory.get(j));
+				}
+				for (int j = 0; j < bhObject.P.stars.get(i).parametersVector.size(); j++) {
+					s.parametersVector.add(bhObject.P.stars.get(i).parametersVector.get(j));
+				}
+				bhObjectBestSnap.P.stars.add(s);
+			}
+			for (int i = 0; i < bhObject.P.totalCoverageHistory.size(); i++) {
+				bhObjectBestSnap.P.totalCoverageHistory.add(bhObject.P.totalCoverageHistory.get(i));
+			}
+			
+		}
 	}
 }

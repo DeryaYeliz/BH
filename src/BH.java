@@ -10,15 +10,15 @@ import destek.Coverage;
 public class BH {
 	
 	public Star starBH;
-	//public int indexOfBH;
-	//public List<Double> EP; 
-	public double R;
 	Population P;
+	public double R;
+	public double maxPCoverage;
 	
 	public BH() {
 		//EP = new ArrayList<Double>();
 		P = new Population();
 		P.init();
+		maxPCoverage = -1;
 
 	}
 
@@ -52,15 +52,16 @@ public class BH {
 		}
 
 	}
-	public void calculatePopulationsCoverage(Population P) throws IOException {
+	public void calculatePopulationsCoverage(Population P_) throws IOException {
 		double coverageValue;
-		for (int i = 0; i < P.stars.size(); i++) {
-			if(P.stars.get(i).isAlive) {
-				Coverage.inputListforCoverage.add(P.stars.get(i).parametersVector);		
+		for (int i = 0; i < P_.stars.size(); i++) {
+			if(P_.stars.get(i).isAlive) {
+				Coverage.inputListforCoverage.add(P_.stars.get(i).parametersVector);		
 			}
 		}
 		coverageValue = Coverage.getCoverage(); 
-		P.totalCoverage = coverageValue;
+		P_.totalCoverage = coverageValue;
+		System.out.println("Total Cov: " + coverageValue);
 		Coverage.inputListforCoverage.clear();
 	}
 	public double updateRadius(Population P, Star bh){
@@ -119,5 +120,7 @@ public class BH {
 		}
 				
 	}
+	
+	
 	
 }
