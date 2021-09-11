@@ -3,8 +3,10 @@ package destek;
 public class Configuration {
 
 	public static final int NUM_STARS = 10;
-	public static final int NUM_PARAMTERS = 12;
-	public static final int NUM_ITERATION = 150;
+	//public static final int NUM_PARAMTERS = 12;
+	public static final int NUM_PARAMTERS = 3;
+
+	public static final int NUM_ITERATION = 500; //10 iken triange all-sttar %100
 	public static final int NUM_BLACKHOLES = 1;
 	public static final int E_MAX = 50;
 	public static final int E_THRESHOLD = 10;
@@ -18,7 +20,8 @@ public class Configuration {
 	public static final String fileNameCovReport = "jacoco.csv";
 	
 	public static final String pathAlgo = "/Users/yeliz/eclipse-workspace/MechulAlgoritma";
-	public static final String pathBranchFile = "/Users/yeliz/eclipse-workspace/MechulAlgoritma/target/site/jacoco/tez.MechulAlgoritma/App.java.html";
+	//public static final String pathBranchFile = "/Users/yeliz/eclipse-workspace/MechulAlgoritma/target/site/jacoco/tez.MechulAlgoritma/App.java.html";
+	public static final String pathBranchFile = "/Users/yeliz/eclipse-workspace/MechulAlgoritma/target/site/jacoco/tez.MechulAlgoritma/Triangle.java.html";
 	public static final String pathLog = "/Users/yeliz";
 	public static final String fileNameLog = "log.txt";
 	public static final String fileNameGraph = "graph.txt";

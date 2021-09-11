@@ -7,7 +7,9 @@ public class Star {
 
 	
 	public List<Integer> parametersVector; 
-	Parameters params;
+	//Parameters params;
+	//ParametersTriangle params;
+	ParametersValidDay params;
 	public List<Double> branchMissedVector; 
 	public int id;
 	public double coverage;
@@ -21,14 +23,19 @@ public class Star {
 		parametersVector = new ArrayList<Integer>();
 		branchMissedVector = new ArrayList<Double>();
 		coverageHistory =  new ArrayList<Double>();
-		params = new Parameters(Configuration.NUM_PARAMTERS);
+		//params = new Parameters(Configuration.NUM_PARAMTERS);
+		//params = new ParametersTriangle(Configuration.NUM_PARAMTERS);
+		params = new ParametersValidDay(Configuration.NUM_PARAMTERS);
+
 		params.initilizeBoundries();
 		generateRandomStar(params,-1);
 		id = Configuration.starID;
 		Configuration.starID ++;
 	}
 	
-	public void generateRandomStar(Parameters params, int indexParamToChange){
+	//public void generateRandomStar(Parameters params, int indexParamToChange){
+	//public void generateRandomStar(ParametersTriangle params, int indexParamToChange){
+		public void generateRandomStar(ParametersValidDay params, int indexParamToChange){
 //		Random rand = new Random();
 		List<Integer> inputVector;
 		int index;

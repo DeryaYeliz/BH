@@ -21,8 +21,10 @@ import destek.Configuration;
 import destek.Coverage;
 
 public class Main {
+	public static long startTime;
+	public static long endTime;
 	public static void main(String[] args) throws IOException {
-		long startTime = System.currentTimeMillis();
+		 startTime = System.currentTimeMillis();
 	
 		
 		BH bhObject = new BH();
@@ -46,7 +48,7 @@ public class Main {
 		bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
 		bhObject.P.totalCoverageHistory.add(bhObject.P.totalCoverage);
 		Configuration.timeStamp ++;	
-		keepMaxTotalCoverageSnap(bhObject, bhObjectBestSnap);
+		keepMaxTotalCoverageSnap(bhObject, bhObjectBestSnap); //**
 
 		for (int i = 0; i < Configuration.NUM_ITERATION; i++) {
 			System.out.println("ITERASYON: " + (i+1));
@@ -58,13 +60,13 @@ public class Main {
 			for (int j = 0; j < starListeBoyu; j++) {
 				if(bhObject.P.stars.get(j).isAlive && bhObject.starBH != bhObject.P.stars.get(j)) {
 					//System.out.println("dist: " + dist(bhObject.starBH, bhObject.P.stars.get(j)));
-					/*if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
+					if(dist(bhObject.starBH, bhObject.P.stars.get(j)) < bhObject.R) {
 						bhObject.P.stars.get(j).isAlive = false;
 						bhObject.P.stars.add(new Star());
 						ekStarListeBoyu++;
 						//System.out.println("ekStarListeBoyu:" + ekStarListeBoyu);
-					}*/
-					ratio = calculateMissedBranchRatio(bhObject.starBH,bhObject.P.stars.get(j));
+					}
+					/*ratio = calculateMissedBranchRatio(bhObject.starBH,bhObject.P.stars.get(j));
 					System.out.print("Ratio: " + ratio);
 					if(!isBestInAtLeastOneBranch(bhObject.P, bhObject.P.stars.get(j))) {
 						if(ratio < 1.0) {
@@ -81,7 +83,7 @@ public class Main {
 								newBornStar = new Star();
 							}					
 						}		
-					}
+					}*/
 				}
 				
 			}
@@ -95,7 +97,7 @@ public class Main {
 			bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
 			bhObject.P.totalCoverageHistory.add(bhObject.P.totalCoverage);
 			
-			keepMaxTotalCoverageSnap(bhObject, bhObjectBestSnap);
+			//**keepMaxTotalCoverageSnap(bhObject, bhObjectBestSnap); //**
 
 			starListeBoyu = starListeBoyu + ekStarListeBoyu;
 			ekStarListeBoyu = 0;
@@ -117,12 +119,16 @@ public class Main {
 		}
 		//Log yaz
 		printResult(bhObject.P);
-		bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
-		sonDarbe(bhObject.P, bhObjectBestSnap.starBH,bhObjectBestSnap.P);
+		//**bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
+		bhObject.calculatePopulationsCoverage(bhObject.P);
+
+		//**sonDarbe(bhObject.P, bhObjectBestSnap.starBH,bhObjectBestSnap.P);
 		//Total Coverege History tut
-		bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
+		//**bhObject.calculatePopulationsCoverage(bhObjectBestSnap.P);
+		bhObject.calculatePopulationsCoverage(bhObject.P);
 		bhObject.P.totalCoverageHistory.add(Configuration.timeStamp);
-		bhObject.P.totalCoverageHistory.add(bhObjectBestSnap.P.totalCoverage);
+		//**bhObject.P.totalCoverageHistory.add(bhObjectBestSnap.P.totalCoverage);
+		bhObject.P.totalCoverageHistory.add(bhObject.P.totalCoverage);
 		
 		//Starlar icin coverage history tut bura biraz anlamsiz oldu
 		for (int j = 0; j < starListeBoyu; j++) {			
@@ -134,9 +140,11 @@ public class Main {
 			}
 		}
 		
-		offlineAnalyze(bhObjectBestSnap.P, bhObjectBestSnap.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
+		endTime = System.currentTimeMillis();
+		//**offlineAnalyze(bhObjectBestSnap.P, bhObjectBestSnap.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
+		offlineAnalyze(bhObject.P, bhObject.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
+
 		sketchGraph(bhObject.P, bhObject.starBH, Configuration.pathLog, Configuration.fileNameLog, Configuration.fileNameGraph);
-		long endTime = System.currentTimeMillis();
 		System.out.println("DURATION: "+ (endTime-startTime)/60000.0); //dakika
 
 	}
@@ -274,7 +282,8 @@ public class Main {
 		Files.write(path, ("BHStar ID: " + starBH.id).getBytes(), StandardOpenOption.APPEND);
 		Files.write(path, "\n".getBytes(), StandardOpenOption.APPEND);
 		Files.write(path, ("TotalCov: " + P.totalCoverage).getBytes(), StandardOpenOption.APPEND);
-		
+		Files.write(path, ("TotalDuration: " + (endTime-startTime)/60000.0).getBytes(), StandardOpenOption.APPEND);
+
 		
 		
 		
